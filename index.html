@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#142b43">
+  <meta name="description" content="A worldwide collaborative Buffon's needle experiment. One click, one toothpick, one shared estimate of pi.">
+  <title>Pi Toothpick — A Global Experiment</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a class="wordmark" href="./" aria-label="Pi Toothpick home"><span class="mark">π</span> PI TOOTHPICK</a>
+      <span class="live"><i></i> GLOBAL EXPERIMENT</span>
+    </header>
+
+    <section class="intro">
+      <p class="eyebrow">BUFFON'S NEEDLE · COLLECTIVE SCIENCE</p>
+      <h1>Let's calculate<br><em>π</em> together.</h1>
+      <p class="lede">One click drops one virtual toothpick. Every visitor contributes to the same worldwide experiment.</p>
+    </section>
+
+    <section class="experiment card">
+      <div class="experiment-head">
+        <div>
+          <p class="eyebrow">YOUR CONTRIBUTION</p>
+          <h2>Drop a toothpick</h2>
+        </div>
+        <span class="ratio">L / d = 1 / 2</span>
+      </div>
+      <div class="visual" aria-label="A virtual toothpick landing among parallel lines">
+        <canvas id="tossCanvas" width="900" height="300"></canvas>
+        <span id="tossLabel" class="visual-label">READY FOR THE NEXT DROP</span>
+      </div>
+      <button id="dropButton" class="drop-button" disabled><span class="button-symbol">＋</span><span id="buttonText">CONNECTING…</span></button>
+      <p id="status" class="status" role="status">Connecting to the shared experiment…</p>
+    </section>
+
+    <section class="stats" aria-live="polite">
+      <article class="stat-card">
+        <p class="eyebrow">TOTAL DROPS</p>
+        <strong id="totalCount">—</strong>
+        <span>Worldwide contributions</span>
+      </article>
+      <article class="stat-card">
+        <p class="eyebrow">CROSSED A LINE</p>
+        <strong id="crossCount">—</strong>
+        <span>Toothpicks touching a line</span>
+      </article>
+      <article class="stat-card pi-card">
+        <p class="eyebrow">CURRENT π ESTIMATE</p>
+        <strong id="piEstimate">—</strong>
+        <span id="accuracyLabel">Waiting for data</span>
+      </article>
+    </section>
+
+    <section class="how card">
+      <p class="eyebrow">THE MATHEMATICS</p>
+      <h2>How can a toothpick reveal π?</h2>
+      <p>When a toothpick of length <i>L</i> is randomly dropped onto parallel lines spaced <i>d</i> apart (with <i>L</i> ≤ <i>d</i>), the probability of crossing a line is:</p>
+      <div class="equation">P(crossing) = <span>2L</span>⁄<span>πd</span></div>
+      <p>So, with <i>N</i> drops and <i>K</i> crossings, we can estimate:</p>
+      <div class="equation">π ≈ <span>2LN</span>⁄<span>dK</span></div>
+      <p class="small-note">This project uses L = 1 and d = 2. The estimate is statistical, so it becomes more reliable as the number of drops grows.</p>
+    </section>
+
+    <footer>
+      <span>PI TOOTHPICK · OPEN EXPERIMENT</span>
+      <a href="https://github.com/studio-people-jp/pi-toothpick" target="_blank" rel="noreferrer">SOURCE CODE ↗</a>
+    </footer>
+  </main>
+</body>
+</html>

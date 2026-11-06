@@ -42,3 +42,37 @@ $$;
 
 revoke all on function public.drop_toothpick(boolean) from public;
 grant execute on function public.drop_toothpick(boolean) to anon, authenticated;
+
+-- Batch endpoint: each accepted request must contain exactly 100 trials.
+create or replace function public.drop_toothpicks(p_results boolean[])
+returns table (total_drops bigint, crossings bigint)
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  batch_size integer;
+  batch_crossings integer;
+begin
+  batch_size := coalesce(array_length(p_results, 1), 0);
+  if batch_size <> 100 then
+    raise exception 'A batch must contain exactly 100 results.';
+  end if;
+
+  select count(*)::integer into batch_crossings
+  from unnest(p_results) as result
+  where result;
+
+  return query
+  update public.experiment_stats as s
+  set
+    total_drops = s.total_drops + 100,
+    crossings = s.crossings + batch_crossings,
+    updated_at = now()
+  where s.id = 1
+  returning s.total_drops, s.crossings;
+end;
+$$;
+
+revoke all on function public.drop_toothpicks(boolean[]) from public;
+grant execute on function public.drop_toothpicks(boolean[]) to anon, authenticated;

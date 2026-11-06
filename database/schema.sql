@@ -60,8 +60,8 @@ begin
   end if;
 
   select count(*)::integer into batch_crossings
-  from unnest(p_results) as result
-  where result;
+  from unnest(p_results) as t(value)
+  where t.value;
 
   return query
   update public.experiment_stats as s

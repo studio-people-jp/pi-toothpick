@@ -27,8 +27,11 @@ function drawScene(crossed = null, x = 0.5, angle = Math.PI / 4) {
   }
   ctx.globalAlpha = 1;
   const cx = w * .5;
-  const cy = 150;
-  const length = 150;
+  // Match the visual scale to the simulation: D = 2 and L = 1.
+  // The parallel lines are 96 px apart, so one unit is 48 px.
+  const pixelsPerUnit = 48;
+  const cy = 54 + x * pixelsPerUnit;
+  const length = L * pixelsPerUnit;
   const dx = Math.cos(angle) * length / 2;
   const dy = Math.sin(angle) * length / 2;
   ctx.lineCap = "round";

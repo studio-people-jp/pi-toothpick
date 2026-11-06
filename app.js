@@ -69,31 +69,37 @@ async function dropOne() {
   if (busy) return;
   busy = true;
   $("dropButton").disabled = true;
-  $("buttonText").textContent = "DROPPING…";
+  $("buttonText").textContent = "DROPPING 100…";
+  setStatus("Generating 100 random toothpick drops…");
 
-  // Buffon's needle: midpoint is uniform over one line-spacing interval;
-  // orientation is uniform over [0, pi). The needle crosses a line when
-  // its vertical half-span reaches the nearest parallel line.
-  const midpoint = Math.random() * D;
-  const angle = Math.random() * Math.PI;
-  const distanceToNearestLine = Math.min(midpoint, D - midpoint);
-  const crossed = (L / 2) * Math.abs(Math.sin(angle)) >= distanceToNearestLine;
-  drawScene(crossed, midpoint, angle);
+  // Generate 100 independent Buffon's needle trials.
+  const results = [];
+  let lastDrop = null;
+  for (let i = 0; i < 100; i++) {
+    const midpoint = Math.random() * D;
+    const angle = Math.random() * Math.PI;
+    const distanceToNearestLine = Math.min(midpoint, D - midpoint);
+    const crossed = (L / 2) * Math.abs(Math.sin(angle)) >= distanceToNearestLine;
+    results.push(crossed);
+    lastDrop = { midpoint, angle, crossed };
+  }
+  drawScene(lastDrop.crossed, lastDrop.midpoint, lastDrop.angle);
 
   try {
-    const { data, error } = await client.rpc("drop_toothpick", { p_crossed: crossed });
+    const { data, error } = await client.rpc("drop_toothpicks", { p_results: results });
     if (error) throw error;
     renderStats(Array.isArray(data) ? data[0] : data);
-    $("tossLabel").textContent = crossed ? "CROSSED A LINE · +1 DROP" : "DID NOT CROSS · +1 DROP";
-    setStatus("Your toothpick has been added to the worldwide total.");
+    const crossings = results.filter(Boolean).length;
+    $("tossLabel").textContent = "100 DROPS COMPLETE · " + crossings + " CROSSED";
+    setStatus("100 toothpicks have been added to the worldwide total.");
   } catch (error) {
     console.error(error);
-    setStatus("Could not save this drop. Please try again. " + (error.message || ""));
-    $("tossLabel").textContent = "DROP NOT RECORDED";
+    setStatus("Could not save this batch. Please try again. " + (error.message || ""));
+    $("tossLabel").textContent = "BATCH NOT RECORDED";
   } finally {
     busy = false;
     $("dropButton").disabled = false;
-    $("buttonText").textContent = "DROP ONE TOOTHPICK";
+    $("buttonText").textContent = "DROP 100 TOOTHPICKS";
   }
 }
 
@@ -111,7 +117,7 @@ async function init() {
     await loadStats();
     $("dropButton").disabled = false;
     $("buttonText").textContent = "DROP ONE TOOTHPICK";
-    setStatus("Connected. Every click adds one drop to the shared experiment.");
+    setStatus("Connected. Every click adds 100 drops to the shared experiment.");
   } catch (error) {
     console.error(error);
     setStatus("Could not connect to the experiment database. Check the Supabase setup.");

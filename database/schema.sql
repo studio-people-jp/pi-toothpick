@@ -43,7 +43,7 @@ $$;
 revoke all on function public.drop_toothpick(boolean) from public;
 grant execute on function public.drop_toothpick(boolean) to anon, authenticated;
 
--- Batch endpoint: each accepted request must contain exactly 10,000 trials.
+-- Batch endpoint: accept the previous 1,000-trial batch or the new 10,000-trial batch.
 create or replace function public.drop_toothpicks(p_results boolean[])
 returns table (total_drops bigint, crossings bigint)
 language plpgsql
@@ -55,8 +55,8 @@ declare
   batch_crossings integer;
 begin
   batch_size := coalesce(array_length(p_results, 1), 0);
-  if batch_size <> 10000 then
-    raise exception 'A batch must contain exactly 10,000 results.';
+  if batch_size not in (1000, 10000) then
+    raise exception 'A batch must contain exactly 1,000 or 10,000 results.';
   end if;
 
   select count(*)::integer into batch_crossings
@@ -66,7 +66,7 @@ begin
   return query
   update public.experiment_stats as s
   set
-    total_drops = s.total_drops + 10000,
+    total_drops = s.total_drops + batch_size,
     crossings = s.crossings + batch_crossings,
     updated_at = now()
   where s.id = 1

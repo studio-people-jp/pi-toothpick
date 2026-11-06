@@ -69,13 +69,13 @@ async function dropOne() {
   if (busy) return;
   busy = true;
   $("dropButton").disabled = true;
-  $("buttonText").textContent = "DROPPING 100…";
-  setStatus("Generating 100 random toothpick drops…");
+  $("buttonText").textContent = "DROPPING 1,000…";
+  setStatus("Generating 1,000 random toothpick drops…");
 
   // Generate 100 independent Buffon's needle trials.
   const results = [];
   let lastDrop = null;
-  for (let i = 0; i < 100; i++) {
+  for (let i = 0; i < 1000; i++) {
     const midpoint = Math.random() * D;
     const angle = Math.random() * Math.PI;
     const distanceToNearestLine = Math.min(midpoint, D - midpoint);
@@ -90,8 +90,8 @@ async function dropOne() {
     if (error) throw error;
     renderStats(Array.isArray(data) ? data[0] : data);
     const crossings = results.filter(Boolean).length;
-    $("tossLabel").textContent = "100 DROPS COMPLETE · " + crossings + " CROSSED";
-    setStatus("100 toothpicks have been added to the worldwide total.");
+    $("tossLabel").textContent = "1,000 DROPS COMPLETE · " + crossings + " CROSSED";
+    setStatus("1,000 toothpicks have been added to the worldwide total.");
   } catch (error) {
     console.error(error);
     setStatus("Could not save this batch. Please try again. " + (error.message || ""));
@@ -99,7 +99,7 @@ async function dropOne() {
   } finally {
     busy = false;
     $("dropButton").disabled = false;
-    $("buttonText").textContent = "DROP 100 TOOTHPICKS";
+    $("buttonText").textContent = "DROP 1,000 TOOTHPICKS";
   }
 }
 
@@ -116,8 +116,8 @@ async function init() {
   try {
     await loadStats();
     $("dropButton").disabled = false;
-    $("buttonText").textContent = "DROP ONE TOOTHPICK";
-    setStatus("Connected. Every click adds 100 drops to the shared experiment.");
+    $("buttonText").textContent = "DROP 1,000 TOOTHPICKS";
+    setStatus("Connected. Every click adds 1,000 drops to the shared experiment.");
   } catch (error) {
     console.error(error);
     setStatus("Could not connect to the experiment database. Check the Supabase setup.");

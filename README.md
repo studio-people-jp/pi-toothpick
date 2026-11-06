@@ -1,6 +1,6 @@
 # Pi Toothpick
 
-A worldwide collaborative Buffon's needle experiment. One click contributes one virtual toothpick to a shared estimate of π.
+A worldwide collaborative Buffon's needle experiment. One click contributes 1,000 virtual toothpicks to a shared estimate of π.
 
 ## Project setup
 
@@ -19,7 +19,7 @@ https://studio-people-jp.github.io/pi-toothpick/
 
 ## How it works
 
-The page generates a random midpoint and orientation for a toothpick of length `L = 1` between parallel lines spaced `d = 2` apart. It determines whether that toothpick crosses a line, then calls the Supabase RPC function `drop_toothpick`.
+The page generates a random midpoint and orientation for a toothpick of length `L = 1` between parallel lines spaced `d = 2` apart. It determines whether that toothpick crosses a line, then calls the Supabase RPC function `drop_toothpicks` with 1,000 trial results.
 
 The database function increments the shared counters atomically, so simultaneous visitors do not overwrite one another's contributions.
 
@@ -33,4 +33,4 @@ With `N` total drops and `K` crossings:
 
 - The browser uses only the Supabase anon/publishable key. This key is designed for public clients; database permissions are controlled by RLS and function grants.
 - **Never put the Supabase service_role key in this repository or in browser code.**
-- The public RPC accepts one boolean result per call. This is a fun public experiment, not a tamper-proof scientific measurement service.
+- The public batch RPC accepts exactly 1,000 boolean results per call. This is a fun public experiment, not a tamper-proof scientific measurement service.
